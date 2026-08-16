@@ -87,12 +87,12 @@ export const DICT: Record<string, Entry> = {
 
   /* ---------------- journey ----------------
      Chapter copy lives in content/journey.ts; only the chrome is here. */
-  "journey.eyebrow": { en: "My Journey", fr: "Mon parcours" },
+  "journey.eyebrow": { en: "Modern Technology Stack", fr: "Mon parcours" },
   "journey.enter": { en: "Scroll to travel", fr: "Faites défiler pour avancer" },
   "journey.chapter": { en: "Chapter", fr: "Chapitre" },
   "journey.lede": {
-    en: "From Telangana to the Côte d’Azur — the chapters that turned a salesperson into a software developer.",
-    fr: "Du Telangana à la Côte d’Azur — les chapitres qui ont transformé un commercial en développeur logiciel.",
+    en: "Leveraging Python, Django, React, PostgreSQL, and REST APIs to create secure, responsive, and user-focused digital solutions.",
+    fr: "Stack technologique moderne\nExploiter Python, Django, React, PostgreSQL et les API REST pour créer des solutions numériques sécurisées, réactives et axées sur l'utilisateur.",
   },
 
   /* ---------------- design stack ---------------- */

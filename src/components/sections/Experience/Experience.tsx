@@ -23,6 +23,7 @@ import { getLenis } from "@/lib/lenis";
 import { sceneScrub } from "@/lib/scene";
 import styles from "./Experience.module.css";
 import { useLang, L } from "@/lib/i18n";
+import { EXPERIENCES } from "@/content/experience";
 
 const STEP_VH = 0.62;
 const DEPTH = 3;
@@ -57,24 +58,9 @@ export interface Role {
 export default function Experience() {
   const root = useRef<HTMLElement>(null);
   const { t, lang } = useLang();
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/experience/`)
-      .then((res) => res.json())
-      .then((data) => {
-        setRoles(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch experience data:", err);
-        setLoading(false);
-      });
-  }, []);
-
-  useEffect(() => {
-    if (loading || roles.length === 0) return;
+    if (EXPERIENCES.length === 0) return;
     
     const el = root.current;
     if (!el) return;
@@ -97,7 +83,7 @@ export default function Experience() {
         boards.forEach((b, i) => b.classList.toggle(styles.on, i === idx));
         navItems.forEach((it, i) => it.classList.toggle(styles.navOn, i === idx));
         if (counter) counter.textContent = `0${idx + 1} / 0${n}`;
-        if (tint) tint.style.background = `${roles[idx].color}12`;
+        if (tint) tint.style.background = `${EXPERIENCES[idx].color}12`;
       };
 
       const place = (p: number) => {
@@ -220,7 +206,7 @@ export default function Experience() {
     });
 
     return () => mm.revert();
-  }, [roles, loading]);
+  }, [lang]);
 
   return (
     <section className={styles.experience} id="experience" ref={root}>
@@ -238,10 +224,10 @@ export default function Experience() {
       {/* the stack — centred, large, the hero visual of this section */}
       <div className={styles.stageWrap}>
         <div className={styles.stage}>
-          {roles.map((r, i) => (
+          {EXPERIENCES.map((r, i) => (
             <article
               className={`${styles.board} ${r.fg === "dark" ? styles.dark : ""} ${i === 0 ? styles.on : ""}`}
-              key={r.company}
+              key={r.id}
               style={{ background: r.color, zIndex: 200 - i }}
             >
               {/* IDENTITY STRIP — sits inside the exposed top band of every
@@ -322,10 +308,10 @@ export default function Experience() {
       </div>
 
       <div className={styles.foot}>
-        <span className={styles.count}>01 / 0{roles.length}</span>
+        <span className={styles.count}>01 / 0{EXPERIENCES.length}</span>
         <div className={styles.nav} role="list">
-          {roles.map((r) => (
-            <button className={styles.navItem} key={r.company} type="button">
+          {EXPERIENCES.map((r) => (
+            <button className={styles.navItem} key={r.id} type="button">
               <i style={{ background: r.color }} />
               {r.company}
             </button>

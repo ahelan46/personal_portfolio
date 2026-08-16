@@ -28,6 +28,7 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { sceneScrub } from "@/lib/scene";
 import styles from "./LightJourney.module.css";
 import { useLang } from "@/lib/i18n";
+import { JOURNEY } from "@/content/journey";
 
 /* palette progression across the journey */
 const PALETTE = ["#0072E3", "#FF6A00", "#FF2E0F", "#AB54F7", "#00AA3C"];
@@ -75,19 +76,6 @@ const FRAG = /* glsl */ `
   }
 `;
 
-type JourneyChapter = {
-  id: number;
-  year: string;
-  title: string;
-  place: string;
-  story: string;
-  bridge: string;
-  fr_title?: string;
-  fr_place?: string;
-  fr_story?: string;
-  fr_bridge?: string;
-};
-
 export default function LightJourney() {
   const rootRef = useRef<HTMLElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
@@ -98,29 +86,13 @@ export default function LightJourney() {
   const [staticMode, setStaticMode] = useState(false);
   const { t, lang } = useLang();
   
-  const [chapters, setChapters] = useState<JourneyChapter[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/journey/`)
-      .then((res) => res.json())
-      .then((data) => {
-        setChapters(data.results || data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch journey data:", err);
-        setLoading(false);
-      });
-  }, []);
-
   useEffect(() => {
     const rootEl = rootRef.current;
     const frame = frameRef.current;
     const canvas = canvasRef.current;
-    if (!rootEl || !frame || !canvas || loading || chapters.length === 0) return;
+    if (!rootEl || !frame || !canvas) return;
     
-    const CH_SPAN = (CH_END - CH_START) / chapters.length;
+    const CH_SPAN = (CH_END - CH_START) / JOURNEY.length;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) setStaticMode(true);
@@ -371,7 +343,7 @@ export default function LightJourney() {
         const idx =
           p < CH_START
             ? -1
-            : Math.min(chapters.length - 1, Math.floor((p - CH_START) / CH_SPAN));
+            : Math.min(JOURNEY.length - 1, Math.floor((p - CH_START) / CH_SPAN));
 
         if (idx !== shown) {
           shown = idx;
@@ -410,14 +382,10 @@ export default function LightJourney() {
       coreMat.dispose();
       renderer.dispose();
     };
-  }, [loading, chapters]);
+  }, []);
 
   const isStatic = staticMode || !webglOk;
   const isFr = lang === "fr";
-
-  if (loading || chapters.length === 0) {
-    return <section className={styles.journey} id="journey" ref={rootRef}></section>;
-  }
 
   return (
     <section className={styles.journey} id="journey" ref={rootRef}>
@@ -444,7 +412,7 @@ export default function LightJourney() {
                 <p className={styles.introHint}>{t("journey.enter")}</p>
               </div>
 
-              {chapters.map((c) => (
+              {JOURNEY.map((c) => (
                 <article className={styles.chapter} key={c.id}>
                   <span className={styles.chYear}>{c.year}</span>
                   <h3 className={styles.chTitle}>{isFr && c.fr_title ? c.fr_title : c.title}</h3>
@@ -460,10 +428,10 @@ export default function LightJourney() {
               <div className={styles.rail}>
                 <span className={styles.counter}>
                   <b className={styles.counterNow}>01</b> /{" "}
-                  {String(chapters.length).padStart(2, "0")}
+                  {String(JOURNEY.length).padStart(2, "0")}
                 </span>
                 <span className={styles.ticks}>
-                  {chapters.map((c, i) => (
+                  {JOURNEY.map((c, i) => (
                     <span
                       className={`${styles.tick} ${i === 0 ? styles.tickOn : ""}`}
                       key={c.id}
@@ -482,7 +450,7 @@ export default function LightJourney() {
           <h2>{t("journey.eyebrow")}</h2>
           <p className={styles.staticLede}>{t("journey.lede")}</p>
           <ol>
-            {chapters.map((c) => (
+            {JOURNEY.map((c) => (
               <li key={c.id}>
                 <span className={styles.staticYear}>{c.year}</span>
                 <h3>{isFr && c.fr_title ? c.fr_title : c.title}</h3>

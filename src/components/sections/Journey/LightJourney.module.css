@@ -72,6 +72,7 @@
   letter-spacing: -0.02em;
   color: #fff;
   text-wrap: balance;
+  white-space: pre-wrap;
 }
 .introHint {
   margin-top: 22px;

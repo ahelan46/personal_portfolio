@@ -6,12 +6,15 @@ import Button from "@/components/ui/Button";
 import VelocityMarquee from "@/components/ui/VelocityMarquee";
 import styles from "./About.module.css";
 import { useLang } from "@/lib/i18n";
+import { ABOUT as aboutData } from "@/content/about";
 
 type AboutData = {
   heading_1: string;
   heading_2: string;
   heading_em: string;
   heading_3: string;
+  bio: string;
+  profile_image: string | null;
   fr_heading_1: string;
   fr_heading_2: string;
   fr_heading_em: string;
@@ -22,38 +25,25 @@ type AboutData = {
   fr_cta_text: string;
   marquee_1: string[];
   marquee_2: string[];
-  metrics: {
-    value: string;
-    count: number | null;
-    prefix?: string;
-    suffix?: string;
-    label: string;
-    fr_label: string;
-  }[];
+  about_metric_1_val: string;
+  about_metric_1_title: string;
+  about_metric_1_desc: string;
+  about_metric_2_val: string;
+  about_metric_2_title: string;
+  about_metric_2_desc: string;
+  about_metric_3_val: string;
+  about_metric_3_title: string;
+  about_metric_3_desc: string;
+  about_metric_4_val: string;
+  about_metric_4_title: string;
+  about_metric_4_desc: string;
 };
 
 export default function About() {
   const root = useRef<HTMLElement>(null);
   const { t, lang } = useLang();
   
-  const [aboutData, setAboutData] = useState<AboutData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/about/`)
-      .then((res) => res.json())
-      .then((data) => {
-        // Since there is only one About object, if it's a paginated list, we take the first.
-        // The API actually returns a single object or list depending on the viewset. Let's handle both:
-        const item = data.results ? data.results[0] : data[0] || data;
-        setAboutData(item);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch about data:", err);
-        setLoading(false);
-      });
-  }, []);
+  const loading = false;
 
   useEffect(() => {
     const el = root.current;
@@ -73,7 +63,18 @@ export default function About() {
           ...vars,
         });
 
-      reveal([`.${styles.eyebrow}`, `.${styles.h2}`], el.querySelector(`.${styles.header}`)!);
+      reveal([`.${styles.eyebrow}`, `.${styles.h2}`, `.${styles.bio}`], el.querySelector(`.${styles.header}`)!);
+      
+      const rightCol = el.querySelector(`.${styles.rightCol}`);
+      if (rightCol) {
+        gsap.from(rightCol, {
+          x: 40,
+          autoAlpha: 0,
+          duration: 1.2,
+          ease: EASE.outExpo,
+          scrollTrigger: { trigger: rightCol, start: "top 82%" },
+        });
+      }
 
       /* metrics: reveal + count-up when the band enters */
       const band = el.querySelector(`.${styles.metrics}`);
@@ -126,31 +127,56 @@ export default function About() {
       ]} />
 
       <div className={styles.wrap}>
-        <div className={styles.header}>
-          <p className={styles.eyebrow}>
-            <span>01</span> {t("about.eyebrow")}
-          </p>
-          <h2 className={styles.h2}>
-            {isFr && aboutData.fr_heading_1 ? aboutData.fr_heading_1 : aboutData.heading_1}<br />
-            {isFr && aboutData.fr_heading_2 ? aboutData.fr_heading_2 : aboutData.heading_2} <em className={styles.serif}>{isFr && aboutData.fr_heading_em ? aboutData.fr_heading_em : aboutData.heading_em}</em>{(isFr && aboutData.fr_heading_3) ? aboutData.fr_heading_3 : aboutData.heading_3}
-          </h2>
+        <div className={styles.mainGrid}>
+          <div className={styles.leftCol}>
+            <div className={styles.header}>
+              <p className={styles.eyebrow}>
+                <span>01</span> {t("about.eyebrow")}
+              </p>
+              <h2 className={styles.h2}>
+                {isFr && aboutData.fr_heading_1 ? aboutData.fr_heading_1 : aboutData.heading_1}<br />
+                {isFr && aboutData.fr_heading_2 ? aboutData.fr_heading_2 : aboutData.heading_2} <em className={styles.serif}>{isFr && aboutData.fr_heading_em ? aboutData.fr_heading_em : aboutData.heading_em}</em>{(isFr && aboutData.fr_heading_3) ? aboutData.fr_heading_3 : aboutData.heading_3}
+              </h2>
+            </div>
+            <p className={styles.bio}>{aboutData.bio}</p>
+          </div>
+          <div className={styles.rightCol}>
+            <div className={styles.profileCircle}></div>
+            {aboutData.profile_image ? (
+              <img 
+                src={aboutData.profile_image.startsWith('http') ? aboutData.profile_image : `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${aboutData.profile_image}`} 
+                className={styles.profileImg} 
+                alt="Profile" 
+              />
+            ) : (
+              <img src="/static/dist/images/portrait.png" className={styles.profileImg} alt="Profile" />
+            )}
+          </div>
         </div>
 
         <div className={styles.metrics}>
-          {(aboutData.metrics || []).map((m, idx) => (
+          {[
+            { val: aboutData.about_metric_1_val, title: aboutData.about_metric_1_title, desc: aboutData.about_metric_1_desc },
+            { val: aboutData.about_metric_2_val, title: aboutData.about_metric_2_title, desc: aboutData.about_metric_2_desc },
+            { val: aboutData.about_metric_3_val, title: aboutData.about_metric_3_title, desc: aboutData.about_metric_3_desc },
+            { val: aboutData.about_metric_4_val, title: aboutData.about_metric_4_title, desc: aboutData.about_metric_4_desc },
+          ].map((m, idx) => (
             <div className={styles.metric} key={idx}>
               <div className={styles.metricNum}>
-                {m.count !== null ? (
+                {m.val.match(/\d+/) ? (
                   <>
-                    {m.prefix}
-                    <span data-metric-count={m.count}>{m.count}</span>
-                    <i>{m.suffix}</i>
+                    {m.val.replace(/[\d+%\s].*/, '')}
+                    <span data-metric-count={m.val.match(/\d+/)?.[0] || 0}>
+                      {m.val.match(/\d+/)?.[0] || 0}
+                    </span>
+                    <i>{m.val.replace(/^.*?\d+/, '')}</i>
                   </>
                 ) : (
-                  <span className={styles.metricStatic}>{m.value}</span>
+                  <span className={styles.metricStatic}>{m.val}</span>
                 )}
               </div>
-              <div className={styles.metricLabel}>{isFr && m.fr_label ? m.fr_label : m.label}</div>
+              <div className={styles.metricLabel}>{m.title}</div>
+              {m.desc && <div className={styles.metricDesc}>{m.desc}</div>}
             </div>
           ))}
         </div>

@@ -1,22 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import ProjectCard from '../components/ProjectCard';
+import { PROJECTS } from '@/content/projects';
 
-const Projects = () => {
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('http://localhost:8000/api/projects/')
-      .then(res => res.json())
-      .then(data => {
-        setProjects(data.results || data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Error fetching projects:", err);
-        setLoading(false);
-      });
-  }, []);
+export default function Projects() {
+  const projects = PROJECTS;
+  const loading = false;
 
   return (
     <div className="container section">
@@ -38,4 +26,4 @@ const Projects = () => {
   );
 };
 
-export default Projects;
+

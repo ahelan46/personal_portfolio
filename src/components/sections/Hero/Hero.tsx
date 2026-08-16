@@ -8,14 +8,7 @@ import Typewriter from "@/components/ui/Typewriter";
 import styles from "./Hero.module.css";
 import { useLang } from "@/lib/i18n";
 
-const STATS_LEFT = [
-  { n: 20, suffix: "+", key: "stat.projects", icon: "/images/icons/projects.png" },
-  { n: 5, suffix: "+", key: "stat.years", icon: "/images/icons/years.png" },
-];
-const STATS_RIGHT = [
-  { n: 10, suffix: "+", key: "stat.countries", icon: "/images/icons/countries.png" },
-  { n: 100, suffix: "%", key: "stat.satisfaction", icon: "/images/icons/satisfaction.png" },
-];
+
 
 /* ambient particles — position (vw/vh %), size px, tone */
 const PARTICLES = [
@@ -40,9 +33,18 @@ function StatCard({ n, suffix, label, icon }: { n: number; suffix: string; label
   );
 }
 
-export default function Hero() {
+export default function Hero({ about }: { about?: any }) {
   const root = useRef<HTMLElement>(null);
   const { t } = useLang();
+
+  const STATS_LEFT = [
+    { n: about?.projects_completed || 20, suffix: "+", key: "stat.projects", icon: "/static/dist/images/icons/projects.png" },
+    { n: about?.years_of_experience || 5, suffix: "+", key: "stat.years", icon: "/static/dist/images/icons/years.png" },
+  ];
+  const STATS_RIGHT = [
+    { n: about?.countries_worked_with || 10, suffix: "+", key: "stat.countries", icon: "/static/dist/images/icons/countries.png" },
+    { n: about?.client_satisfaction || 100, suffix: "%", key: "stat.satisfaction", icon: "/static/dist/images/icons/satisfaction.png" },
+  ];
 
   useEffect(() => {
     const el = root.current;
@@ -218,7 +220,7 @@ export default function Hero() {
 
           <img
             className={styles.portrait}
-            src="/images/ahelan.jpg.png"
+            src="/static/dist/images/ahelan.jpg.png"
             alt="Ahelan Kumar Reddy — Software Developer"
             width="554"
             height="573"

@@ -28,6 +28,7 @@ import { getLenis } from "@/lib/lenis";
 import { sceneScrub } from "@/lib/scene";
 import styles from "./Certifications.module.css";
 import { useLang, L } from "@/lib/i18n";
+import { CERTS } from "@/content/certificates";
 
 /* scroll length per credential — see the note in Experience.tsx: the pinned
    sections are kept tight so the page never feels locked */
@@ -73,31 +74,15 @@ type Cert = {
   order: number;
 };
 /* alternating tone rhythm, kept from the deck design */
-const TONE = ["dark", "light", "dark", "light", "dark"] as const;
+const TONE = ["dark", "red", "light", "dark", "red"] as const;
 
 export default function Certifications() {
   const root = useRef<HTMLElement>(null);
   const { t, lang } = useLang();
   
-  const [certs, setCerts] = useState<Cert[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/certifications/`)
-      .then((res) => res.json())
-      .then((data) => {
-        setCerts(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch certifications:", err);
-        setLoading(false);
-      });
-  }, []);
-
   useEffect(() => {
     const el = root.current;
-    if (!el || loading || certs.length === 0) return;
+    if (!el || CERTS.length === 0) return;
 
     const mm = gsap.matchMedia();
 
@@ -233,7 +218,7 @@ export default function Certifications() {
     });
 
     return () => mm.revert();
-  }, [loading, certs]);
+  }, [lang]);
 
   return (
     <section className={styles.certs} id="certifications" ref={root}>
@@ -249,7 +234,7 @@ export default function Certifications() {
 
       <div className={styles.stageWrap}>
         <div className={styles.stage}>
-          {certs.map((c, i) => {
+          {CERTS.map((c, i) => {
             const tone = TONE[i % TONE.length];
             const cls = `${styles.panel} ${styles[tone]} ${i === 0 ? styles.on : ""}`;
 
@@ -344,7 +329,7 @@ export default function Certifications() {
           <b>06</b> Ahelan
         </span>
         <span className={styles.count}>
-          01 / {String(certs.length).padStart(2, "0")}
+          01 / {String(CERTS.length).padStart(2, "0")}
         </span>
         <span className={styles.footLbl}>{t("cert.foot")}</span>
       </div>

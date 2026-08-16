@@ -228,10 +228,10 @@
 }
 .chTitle {
   margin-top: 22px;
-  font-weight: 900;
-  font-size: clamp(30px, 4.5vw, 60px);
-  letter-spacing: -0.03em;
-  line-height: 1.04;
+  font-weight: 800;
+  font-size: clamp(26px, 3.5vw, 46px);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
   color: var(--ink);
 }
 .serif {
@@ -245,9 +245,9 @@
 }
 .chBody {
   margin: 20px auto 0;
-  max-width: 540px;
-  font-size: 16px;
-  line-height: 1.65;
+  max-width: 640px;
+  font-size: clamp(18px, 2.2vw, 26px);
+  line-height: 1.5;
   color: var(--ink-2);
 }
 

@@ -1,21 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { ABOUT } from '@/content/about';
 
 const About = () => {
-  const [about, setAbout] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('http://localhost:8000/api/about/')
-      .then(res => res.json())
-      .then(data => {
-        setAbout(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Error fetching about info:", err);
-        setLoading(false);
-      });
-  }, []);
+  const about = ABOUT;
+  const loading = false;
 
   if (loading) return <div className="loader"></div>;
   if (!about) return <div className="container section text-center">No about information found.</div>;

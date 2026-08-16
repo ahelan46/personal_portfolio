@@ -13,36 +13,16 @@ import Gallery from "@/components/sections/Gallery/Gallery";
 import { ConnectHero, ConnectForm } from "@/components/sections/Connect/Connect";
 import SingleProject from "@/components/sections/ProjectShowcase/SingleProject";
 
+import { PROJECTS } from "@/content/projects";
+import { SKILLS } from "@/content/skills";
+import { ABOUT } from "@/content/about";
+
 export default function Home() {
-  const [projects, setProjects] = useState();
-  const [skills, setSkills] = useState();
-  const [loading, setLoading] = useState(true);
+  const projects = PROJECTS;
+  const skills = SKILLS;
+  const about = ABOUT;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-        const [projectsRes, skillsRes] = await Promise.all([
-          fetch(`${apiUrl}/api/projects/`),
-          fetch(`${apiUrl}/api/skills/`)
-        ]);
-        
-        const projectsData = await projectsRes.json();
-        const skillsData = await skillsRes.json();
-        
-        setProjects(projectsData.results || projectsData);
-        setSkills(skillsData.results || skillsData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    fetchData();
-  }, []);
-
-  if (loading) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#000', color: '#fff' }}>Loading...</div>;
 
   return (
     <>
@@ -53,7 +33,7 @@ export default function Home() {
         </Scene>
 
         <Scene order={2} id="hero">
-          <Hero />
+          <Hero about={about} />
         </Scene>
 
         <Scene order={3} id="about">
@@ -90,7 +70,7 @@ export default function Home() {
           <Gallery />
         </Scene>
 
-        <Scene order={10 + (projects?.length || 0)} id="contact-hero" keepOnMobile>
+        <Scene order={10 + (projects?.length || 0)} id="contact" keepOnMobile>
           <ConnectHero />
         </Scene>
 

@@ -44,14 +44,9 @@ const CHAPTERS: Chapter[] = [
     body: "Product Designer & UX Consultant, currently shaping the UX of Heeding Climate Solutions' sustainable-fuel marketplace while completing my MSc at Montpellier Business School.",
   },
   {
-    label: "My Journey",
-    title: (
-      <>
-        I came to design from the{" "}
-        <em className={styles.serif}>market side.</em>
-      </>
-    ),
-    body: "Growth, analytics, operations — three years of watching users say no taught me exactly what makes them say yes.",
+    label: "Modern technology Stack",
+    title: "",
+    body: "Leveraging Python, Django, React, PostgreSQL, and REST APIs to create secure, responsive, and user-focused digital solutions.",
   },
   {
     label: "Design Philosophy",
